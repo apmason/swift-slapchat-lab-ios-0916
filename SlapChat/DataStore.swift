@@ -11,6 +11,8 @@ import CoreData
 
 class DataStore {
     
+    var messages = [Message]()
+    
     static let sharedInstance = DataStore()
     
     private init() {}
@@ -58,6 +60,30 @@ class DataStore {
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+    }
+    
+    
+    func fetchData() {
+        
+        let context = persistentContainer.viewContext
+        
+        do {
+            
+            let fetchRequest = Message.fetch
+            
+            let unsortedMessages = try context.fetch(fetchRequest)
+            
+            
+            messages = unsortedMessages.sorted(by: { (one, two) -> Bool in
+             
+                one.createdAt.timeIntervalSince1970 > two.createdAt.timeIntervalSince1970
+                
+            })
+            
+        } catch {
+            
+        }
+        
     }
     
 }
